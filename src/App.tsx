@@ -31,6 +31,7 @@ const App: React.FC = () => {
       {products.map((product) => (
         <div key={product.id}>
           <img src={product.imageUrl} alt="dress" />
+          <fieldset></fieldset>
           <h1>{product.id}</h1>
         </div>
       ))}
