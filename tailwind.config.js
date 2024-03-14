@@ -24,6 +24,7 @@ export default {
         "neutral-dark-700": "#FFC132",
         "neutral-main-500": "#FFC132",
         "neutral-light-100": "#FFC132",
+        "background": "rgba(255,255,255,0.95)",
       },
       // backgroundImage: (theme) => ({
       //   "gradient-yellowred":
