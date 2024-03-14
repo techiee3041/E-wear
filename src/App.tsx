@@ -30,7 +30,7 @@ const App: React.FC = () => {
     <div>
       {products.map((product) => (
         <div key={product.id}>
-          {/* <img src={product.imageUrl} alt="dress" /> */}
+          <img src={product.imageUrl} alt="dress" />
           <h1>{product.id}</h1>
         </div>
       ))}
