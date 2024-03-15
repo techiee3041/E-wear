@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+import withMT from "@material-tailwind/react/utils/withMT";
+
+export default withMT({
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -25,6 +27,7 @@ export default {
         "neutral-main-500": "#FFC132",
         "neutral-light-100": "#FFC132",
         "background": "rgba(255,255,255,0.95)",
+        "dark": "rgba(0, 0, 0, 0.4)",
       },
       // backgroundImage: (theme) => ({
       //   "gradient-yellowred":
@@ -49,5 +52,5 @@ export default {
     },
   },
   plugins: [],
-}
+})
 
