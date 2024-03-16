@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseconfig";
+import { db, storage } from "../firebaseconfig";
+import { getDownloadURL, ref } from "firebase/storage";
 
-type Product = {
+export type Product = {
   id: string;
   count: number;
   image: string;
@@ -26,21 +27,27 @@ const initialState: InitialState = {
   isCartOpen: false,
   cart: [],
   items: [],
-  error: ""
+  error: "",
 };
 
 export const fetchItems = createAsyncThunk<Product[]>(
-  "cart/fethItems",
+  "cart/fetchItems",
   async () => {
     const itemCollectionRef = collection(db, "item");
     const data = await getDocs(itemCollectionRef);
     const items: Product[] = [];
-    data.forEach((doc) => {
+
+    const downloadURLPromises = data.docs.map(async (doc) => {
       const item = doc.data() as Product;
       item.id = doc.id;
-      item.count = 0
-      items.push(item);
+      const imageRef = ref(storage, doc.data().image);
+      item.image = await getDownloadURL(imageRef);
+      return item;
     });
+
+    const itemsWithDownloadURLs = await Promise.all(downloadURLPromises);
+
+    items.push(...itemsWithDownloadURLs);
     return items;
   }
 );
@@ -75,7 +82,7 @@ export const cartSlice = createSlice({
       console.log("Before toggle:", state.isCartOpen);
       state.isCartOpen = !state.isCartOpen;
       console.log("After toggle:", state.isCartOpen);
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -87,7 +94,7 @@ export const cartSlice = createSlice({
         // Update the state with the fetched items and set the fetch as complete
         state.items = action.payload;
         state.isLoading = false;
-        state.error = ""
+        state.error = "";
       })
       .addCase(fetchItems.rejected, (state, action) => {
         // Set the error state if the fetch fails
