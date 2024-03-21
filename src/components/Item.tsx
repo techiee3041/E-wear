@@ -8,16 +8,20 @@ import { useState } from "react";
 
 type Props = {
   item: Product;
-  width: number;
 };
 
-const Item = ({ item, width }: Props) => {
+const Item = ({ item }: Props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div style={{ width: width }}>
+    <div
+      className={`relative transform transition-transform duration-1000 ${
+        isHovered ? "scale-110" : "scale-100"
+      }`}
+    >
       <div
         className="relative"
         onMouseOver={() => setIsHovered(true)}
@@ -26,33 +30,34 @@ const Item = ({ item, width }: Props) => {
         <img
           src={item.image}
           alt={item.name}
-          width="300px"
-          height="400px"
           onClick={() => navigate(`/item/${item.id}`)}
-          className="cursor-pointer"
+          className="cursor-pointer w-full h-[400px] object-cover"
         />
         <div
           className={`${
             isHovered ? "block" : "hidden"
-          } relative bottom-[10%] left-0 w-full py-0 px-[5%]`}
+          } absolute bottom-[10%] left-0 w-full py-0 px-[5%]`}
         >
           <div className="flex justify-between">
-            <div className="flex items-center bg-neutral-light-100 rounded-sm">
+            <div className="flex items-center rounded-md bg-white">
               {/* AMOUNT */}
               <IconButton
+                variant="text"
                 onClick={() => setCount(Math.max(count - 1, 1))}
                 placeholder="cart"
+                className="text-xs"
               >
                 <RemoveIcon />
               </IconButton>
               <Typography
-                variant="h1"
+                variant="h4"
                 placeholder="cart"
-                className="text-primary-300"
+                className="text-primary-300 text-xs"
               >
                 {count}
               </Typography>
               <IconButton
+                variant="text"
                 onClick={() => setCount(count + 1)}
                 placeholder="cart"
               >
@@ -64,7 +69,7 @@ const Item = ({ item, width }: Props) => {
               onClick={() => {
                 dispatch(addToCart({ item: { ...item, count } }));
               }}
-              className="bg-primary-300 text-white"
+              className="text-white px-2 font-sans bg-dark"
               placeholder="cart"
             >
               Add to Cart
@@ -74,16 +79,22 @@ const Item = ({ item, width }: Props) => {
       </div>
       <div className="mt-1">
         <Typography
-          variant="h2"
-          className="bg-neutral-dark-700"
+          className=" font-fauna font-bold text-xs text-secondary-600 mb-2"
           placeholder="cart"
         >
           {item.category
-            .replace(/([A-Z])/g, " $1")
-            .replace(/^./, (str) => str.toUpperCase())}
+            ? item.category
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase())
+            : ""}
         </Typography>
-        <Typography placeholder="cart">{item.name}</Typography>
-        <Typography className="font-bold" placeholder="cart">{item.price}</Typography>
+        <p className=" text-sm font-sans font-medium">{item.name}</p>
+        <Typography
+          className="font-bold font-serif text-green-700"
+          placeholder="cart"
+        >
+          ksh{item.price}
+        </Typography>
       </div>
     </div>
   );

@@ -28,6 +28,7 @@ export default withMT({
         "neutral-light-100": "#FFC132",
         "background": "rgba(255,255,255,0.95)",
         "dark": "rgba(0, 0, 0, 0.4)",
+        "black-dark": "rgb(0, 0, 0, 0.4)"
       },
       // backgroundImage: (theme) => ({
       //   "gradient-yellowred":

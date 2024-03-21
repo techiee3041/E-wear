@@ -6,13 +6,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import {
   decreaseCount,
-  fetchItems,
   increaseCount,
   removeFromCart,
   setIsCartOpen,
 } from "../../state";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+
 
 const flexStyles = "flex justify-between items-center";
 
@@ -26,10 +25,6 @@ const CartMenu = () => {
     const price = item.price || 0;
     return total + item.count * price;
   }, 0);
-
-  useEffect(() => {
-    dispatch(fetchItems());
-  }, [dispatch]);
   return (
     // overlay
     <div
@@ -42,10 +37,10 @@ const CartMenu = () => {
         <div className="p-8 overflow-auto h-full">
           {/* HEADER */}
           <div className={`${flexStyles} mb-4`}>
-            <Typography variant="h5" placeholder="cart">
+            <Typography variant="h5" placeholder="cart" className="font-fauna">
               SHOPPING BAG ({cart.length})
             </Typography>
-            <IconButton
+            <IconButton variant="text"
               onClick={() => dispatch(setIsCartOpen())}
               placeholder="cart"
             >
@@ -68,10 +63,11 @@ const CartMenu = () => {
                   <div className="flex-1 basis-3/5">
                     {/* ITEM NAME */}
                     <div className={`${flexStyles} mb-5`}>
-                      <Typography variant="h1" placeholder="cart">
+                      <Typography className="font-bold font-fauna" placeholder="cart">
                         {item.name}
                       </Typography>
                       <IconButton
+                      variant="text"
                         onClick={() =>
                           dispatch(removeFromCart({ id: item.id }))
                         }
@@ -81,13 +77,14 @@ const CartMenu = () => {
                       </IconButton>
                     </div>
                     {/* SHORT DESCRIPTION */}
-                    <Typography placeholder="cart">
+                    <Typography placeholder="cart" className="font-fauna text-sm">
                       {item.shortDescription}
                     </Typography>
                     {/* AMOUNT */}
                     <div className={`${flexStyles} my-4 mx-0`}>
                       <div className="flex items-center border-[1px] border-solid border-neutral-main-500">
                         <IconButton
+                        variant="text"
                           onClick={() =>
                             dispatch(decreaseCount({ id: item.id }))
                           }
@@ -95,10 +92,10 @@ const CartMenu = () => {
                         >
                           <RemoveIcon />
                         </IconButton>
-                        <Typography variant="h1" placeholder="cart">
+                        <Typography variant="h4" placeholder="cart">
                           {item.count}
                         </Typography>
-                        <IconButton
+                        <IconButton variant="text"
                           onClick={() =>
                             dispatch(increaseCount({ id: item.id }))
                           }
@@ -108,8 +105,8 @@ const CartMenu = () => {
                         </IconButton>
                       </div>
                       {/* PRICE */}
-                      <Typography variant="h1" placeholder="cart">
-                        ${item.price}
+                      <Typography variant="h5" placeholder="cart" className="font-cinzel">
+                        Ksh{item.price}
                       </Typography>
                     </div>
                   </div>
@@ -122,16 +119,16 @@ const CartMenu = () => {
           {/* ACTIONS */}
           <div className="my-5 mx-0">
             <div className={`${flexStyles} my-5 mx-0`}>
-              <Typography variant="h1" placeholder="cart">
+              <Typography className="font-bold font-cinzel" placeholder="cart">
                 SUBTOTAL
               </Typography>
-              <Typography variant="h1" placeholder="cart">
-                ${totalPrice}
+              <Typography className="font-bold font-fauna" placeholder="cart">
+                Ksh{totalPrice}
               </Typography>
             </div>
             <Button
               placeholder="cart"
-              className="bg-primary-400 text-white rounded-none min-w-full py-5 px-10 my-5 mx-0"
+              className="bg-primary-500 text-white rounded-none min-w-full py-5 px-10 my-5 mx-0 font-cinzel transition duration-500 hover:opacity-50"
               onClick={() => {
                 navigate("/checkout");
                 dispatch(setIsCartOpen());

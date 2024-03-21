@@ -1,7 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { collection, getDocs } from "firebase/firestore";
-import { db, storage } from "../firebaseconfig";
-import { getDownloadURL, ref } from "firebase/storage";
+import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export type Product = {
   id: string;
@@ -30,32 +27,13 @@ const initialState: InitialState = {
   error: "",
 };
 
-export const fetchItems = createAsyncThunk<Product[]>(
-  "cart/fetchItems",
-  async () => {
-    const itemCollectionRef = collection(db, "item");
-    const data = await getDocs(itemCollectionRef);
-    const items: Product[] = [];
-
-    const downloadURLPromises = data.docs.map(async (doc) => {
-      const item = doc.data() as Product;
-      item.id = doc.id;
-      const imageRef = ref(storage, doc.data().image);
-      item.image = await getDownloadURL(imageRef);
-      return item;
-    });
-
-    const itemsWithDownloadURLs = await Promise.all(downloadURLPromises);
-
-    items.push(...itemsWithDownloadURLs);
-    return items;
-  }
-);
-
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setItems: (state, action) => {
+      state.items = action.payload
+    },
     addToCart: (state, action: PayloadAction<{ item: Product }>) => {
       state.cart = [...state.cart, action.payload.item];
     },
@@ -84,27 +62,10 @@ export const cartSlice = createSlice({
       console.log("After toggle:", state.isCartOpen);
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchItems.pending, (state) => {
-        // Set the state to indicate that the fetch is in progress
-        state.isLoading = true;
-      })
-      .addCase(fetchItems.fulfilled, (state, action) => {
-        // Update the state with the fetched items and set the fetch as complete
-        state.items = action.payload;
-        state.isLoading = false;
-        state.error = "";
-      })
-      .addCase(fetchItems.rejected, (state, action) => {
-        // Set the error state if the fetch fails
-        state.isLoading = false;
-        state.error = action.error.message || "something went wrong";
-      });
-  },
 });
 
 export const {
+  setItems,
   addToCart,
   removeFromCart,
   increaseCount,
