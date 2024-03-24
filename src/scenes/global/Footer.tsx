@@ -31,13 +31,12 @@ const Footer = () => {
 
         <div className="border-b border-gray-400 border-solid border-1 sm:border-none">
           <h4 className="font-bold mb-7">Contact Us</h4>
-          <p className="mb-7">Help Center</p>
-          <p className="mb-7">Track Your Order</p>
-          <p className="mb-7">Corporate & bulk purchasing</p>
-          <p className="mb-7">Returns & Refund</p>
+          <p className="mb-7">P.O BOX 10556-10000, Nairobi, Kenya</p>
+          <p className="mb-7">Email: secondhand@gmail.com</p>
+          <p className="mb-7">+(254) 712 345 678</p>
         </div>
 
-        <div className="w-1/5 flex flex-col">
+        <div className="sm:flex sm:flex-col">
           <h4 className="font-bold mb-4">Follow Us</h4>
           <IconButton placeholder="cart" variant="text" className="inline">
             <FacebookOutlined />

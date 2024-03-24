@@ -67,7 +67,6 @@ const ShoppingList = () => {
     (item) => item.category === "bestSellers"
   );
 
-  console.log(itemList);
   isLoading && <Spinner />;
 
   return (
@@ -110,10 +109,13 @@ const ShoppingList = () => {
         }}
       >
         {isLoading ? (
-          <div className="flex justify-end items-center "
-        >
-          <Spinner color="blue" size="large" className="h-16 w-16 text-gray-900/50" />
-        </div>
+          <div className="flex justify-end items-center ">
+            <Spinner
+              color="blue"
+              size="large"
+              className="h-16 w-16 text-gray-900/50"
+            />
+          </div>
         ) : (
           <>
             {value === "all" &&
