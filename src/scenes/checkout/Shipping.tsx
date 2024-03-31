@@ -1,12 +1,14 @@
-import { Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel} from "@mui/material";
+import { InitialValues } from "./Checkout";
+import AddressForm from "./AddressForm";
 
 type Props = {
-  values: Record<string, string>;
+  values: InitialValues;
   touched: boolean;
   errors: string[];
   handleChange: (value: string) => void;
   handleBlur: (value: string) => void;
-  setFieldValue: (value: string) => void;
+  setFieldValue: (name: string, value: boolean) => void;
 };
 
 const Shipping = ({
@@ -23,8 +25,8 @@ const Shipping = ({
       <div>
           <p className="mb-4 text-lg">Billing information</p>
           <AddressForm
-            type="shippingAddress"
-            values={values.shippingAddress}
+            type="billingAddress"
+            values={values.billingAddress}
             touched={touched}
             errors={errors}
             handleBlur={handleBlur}
@@ -36,9 +38,9 @@ const Shipping = ({
           control={
             <Checkbox
             defaultChecked
-            value={values.shiPPingAddress.isSameAddress}
+            value={values.shippingAddress.isSameAddress}
               onChange={() => {
-                setFieldValue("sameShippingAddress", !values.shiPPingAddress.isSameAddress);
+                setFieldValue("sameShippingAddress", !values.shippingAddress.isSameAddress);
               }}
               name="sameShippingAddress"
               color="primary"
@@ -49,8 +51,18 @@ const Shipping = ({
       </div>
 
       {/* SHIPPING ADDRESS */}
-      {!values.shiPPingAddress.isSameAddress && (
-        <div></div>
+      {!values.shippingAddress.isSameAddress && (
+        <div>
+          <p className="mb-4 text-lg">Shiping information</p>
+          <AddressForm
+            type="shippingAddress"
+            values={values.shippingAddress}
+            touched={touched}
+            errors={errors}
+            handleBlur={handleBlur}
+            handleChange={handleChange}
+          />
+        </div>
       )}
     </div>
   );

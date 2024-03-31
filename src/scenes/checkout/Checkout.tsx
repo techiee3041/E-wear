@@ -4,7 +4,23 @@ import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 
-const initialValues = {
+type Address = {
+  firstName: string;
+  lastName: string;
+  country: string;
+  address: string;
+};
+
+export type InitialValues = {
+  billingAddress: Address;
+  shippingAddress: {
+    isSameAddress: boolean;
+  } & Address;
+  email: string;
+  phoneNumber: string;
+};
+
+const initialValues: InitialValues = {
   billingAddress: {
     firstName: "",
     lastName: "",
