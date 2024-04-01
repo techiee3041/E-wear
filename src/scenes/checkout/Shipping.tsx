@@ -1,15 +1,26 @@
-import { Checkbox, FormControlLabel} from "@mui/material";
-import { InitialValues } from "./Checkout";
+import { Checkbox, FormControlLabel } from "@mui/material";
 import AddressForm from "./AddressForm";
+import { FormikErrors, FormikTouched } from "formik";
+import { CheckoutValues } from "./Checkout";
 
-type Props = {
-  values: InitialValues;
-  touched: boolean;
-  errors: string[];
-  handleChange: (value: string) => void;
-  handleBlur: (value: string) => void;
-  setFieldValue: (name: string, value: boolean) => void;
-};
+export interface Address {
+  isSameAddress?: boolean;
+  firstName: string;
+  lastName: string;
+  country: string;
+  county: string;
+  town: string;
+  address: string;
+}
+
+interface Props {
+  values: CheckoutValues;
+  touched: FormikTouched<CheckoutValues>;
+  errors: FormikErrors<CheckoutValues>;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  setFieldValue: (field: string, value: any) => void;
+}
 
 const Shipping = ({
   values,
@@ -18,29 +29,32 @@ const Shipping = ({
   handleChange,
   handleBlur,
   setFieldValue,
-}: Props) => {
+}: Props): JSX.Element => {
   return (
     <div className="my-7 mx-auto">
       {/* BILLING FORM */}
       <div>
-          <p className="mb-4 text-lg">Billing information</p>
-          <AddressForm
-            type="billingAddress"
-            values={values.billingAddress}
-            touched={touched}
-            errors={errors}
-            handleBlur={handleBlur}
-            handleChange={handleChange}
-          />
+        <p className="mb-4 text-lg">Billing information</p>
+        <AddressForm
+          type="billingAddress"
+          values={values}
+          touched={touched}
+          errors={errors}
+          handleBlur={handleBlur}
+          handleChange={handleChange}
+          setFieldValue={setFieldValue}
+        />
       </div>
       <div className="mb-4">
         <FormControlLabel
           control={
             <Checkbox
-            defaultChecked
-            value={values.shippingAddress.isSameAddress}
+              checked={values.shippingAddress.isSameAddress}
               onChange={() => {
-                setFieldValue("sameShippingAddress", !values.shippingAddress.isSameAddress);
+                setFieldValue(
+                  "shippingAddress.isSameAddress",
+                  !values.shippingAddress.isSameAddress
+                );
               }}
               name="sameShippingAddress"
               color="primary"
@@ -53,14 +67,15 @@ const Shipping = ({
       {/* SHIPPING ADDRESS */}
       {!values.shippingAddress.isSameAddress && (
         <div>
-          <p className="mb-4 text-lg">Shiping information</p>
+          <p className="mb-4 text-lg">Shipping information</p>
           <AddressForm
             type="shippingAddress"
-            values={values.shippingAddress}
-            touched={touched}
-            errors={errors}
+            values={values}
+            touched={touched.shippingAddress}
+            errors={errors.shippingAddress}
             handleBlur={handleBlur}
             handleChange={handleChange}
+            setFieldValue={setFieldValue}
           />
         </div>
       )}

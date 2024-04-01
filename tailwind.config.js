@@ -30,21 +30,13 @@ export default withMT({
         "dark": "rgba(0, 0, 0, 0.4)",
         "black-dark": "rgb(0, 0, 0, 0.4)"
       },
-      // backgroundImage: (theme) => ({
-      //   "gradient-yellowred":
-      //     "linear-gradient(90deg, #FF616A 0%, #FFC837 100%)",
-      //   "mobile-home": "url('./assets/HomePageGraphic.png')",
-      // }),
+      gridTemplateColumns: {
+        'custom': 'repeat(4, minmax(0, 1fr))',
+      },
       fontFamily: {
         fauna: ["Fauna One", "sans-serf"],
         cinzel: ["Cinzel", "sans-serf"],
       },
-      // content: {
-      //   evolvetext: "url('./assets/EvolveText.png')",
-      //   abstractwaves: "url('./assets/AbstractWaves.png')",
-      //   sparkles: "url('./assets/Sparkles.png')",
-      //   circles: "url('./assets/Circles.png')",
-      // },
       screens: {
         xs: "480px",
         sm: "768px",

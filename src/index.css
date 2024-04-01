@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .grid-cols-custom {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 * {
   box-sizing: border-box;
 }

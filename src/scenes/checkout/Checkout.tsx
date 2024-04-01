@@ -1,70 +1,89 @@
 import { useAppSelector } from "../../state/hooks";
-import { StepLabel, Stepper, Button, Step } from "@mui/material";
-import { Formik } from "formik";
+import { StepLabel, Stepper, Step } from "@mui/material";
+import { Formik, FormikErrors, FormikTouched } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
+import Shipping from "./Shipping";
 
-type Address = {
-  firstName: string;
-  lastName: string;
-  country: string;
-  address: string;
-};
-
-export type InitialValues = {
-  billingAddress: Address;
+export interface CheckoutValues {
+  billingAddress: {
+    firstName: string;
+    lastName: string;
+    country: string;
+    county: string;
+    town: string;
+    address: string;
+    postalCode: string;
+  };
   shippingAddress: {
     isSameAddress: boolean;
-  } & Address;
+    firstName: string;
+    lastName: string;
+    country: string;
+    county: string;
+    town: string;
+    address: string;
+    postalCode: string;
+  };
   email: string;
   phoneNumber: string;
-};
+}
 
-const initialValues: InitialValues = {
+const initialValues: CheckoutValues = {
   billingAddress: {
     firstName: "",
     lastName: "",
     country: "",
+    county: "",
+    town: "",
     address: "",
+    postalCode: "",
   },
   shippingAddress: {
     isSameAddress: true,
     firstName: "",
     lastName: "",
     country: "",
+    county: "",
+    town: "",
     address: "",
+    postalCode: "",
   },
   email: "",
   phoneNumber: "",
 };
 
-const CheckoutSchema = [yup.object().shape({
-  billingAddress: yup.object().shape({
-    firstName: yup.string().required("First Name is required"),
-    lastName: yup.string().required("Last Name is required"),
-    country: yup.string().required("Country is required"),
-    address: yup.string().required("Address is required"),
+const CheckoutSchema = [
+  yup.object().shape({
+    billingAddress: yup.object().shape({
+      firstName: yup.string().required("First Name is required"),
+      lastName: yup.string().required("Last Name is required"),
+      country: yup.string().required("Country is required"),
+      county: yup.string().required("County is required"),
+      town: yup.string().required("Town is required"),
+      address: yup.string().required("Address is required"),
+      postalCode: yup.string().required("Postal Code is required"),
+    }),
+    shippingAddress: yup.object().shape({
+      isSameAddress: yup.boolean(),
+      firstName: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+      lastName: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+      country: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+      address: yup.string().when("isSameAddress", {
+        is: false,
+        then: yup.string().required("required"),
+      }),
+    }),
   }),
-  shippingAddress: yup.object().shape({
-    isSameAddress: yup.boolean(),
-    firstName: yup.string().when("isSameAddress", {
-      is: false,
-      then: yup.string().required("required"),
-    }),
-    lastName: yup.string().when("isSameAddress", {
-      is: false,
-      then: yup.string().required("required"),
-    }),
-    country:  yup.string().when("isSameAddress", {
-      is: false,
-      then: yup.string().required("required"),
-    }),
-    address:  yup.string().when("isSameAddress", {
-      is: false,
-      then: yup.string().required("required"),
-    }),
-  }),
-}),
   yup.object().shape({
     email: yup.string().required("Email is required"),
     phoneNumber: yup.string().required("Phone Number is required"),
@@ -77,11 +96,12 @@ const Checkout = () => {
   const isFirstStep = activeStep === 0;
   const isSecondStep = activeStep === 1;
 
-  const handleFormSubmit = async (value: number, actions) => {
+  //copies billing address into shipping address
+  const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
     setActiveStep(activeStep + 1);
   };
 
-  const makePayment = async (values: number) => {};
+  const makePayment = async (values: CheckoutValues) => {};
   return (
     <div className="w-4/5 my-[100px] mx-auto">
       <Stepper activeStep={activeStep} sx={{ m: "20px 0" }}>
@@ -93,7 +113,7 @@ const Checkout = () => {
         </Step>
       </Stepper>
       <div>
-      <Formik
+        <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
           validationSchema={CheckoutSchema[activeStep]}
@@ -111,57 +131,13 @@ const Checkout = () => {
               {isFirstStep && (
                 <Shipping
                   values={values}
-                  errors={errors}
-                  touched={touched}
+                  errors={errors as FormikErrors<CheckoutValues>}
+                  touched={touched as FormikTouched<CheckoutValues>}
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   setFieldValue={setFieldValue}
                 />
               )}
-              {isSecondStep && (
-                <Payment
-                  values={values}
-                  errors={errors}
-                  touched={touched}
-                  handleBlur={handleBlur}
-                  handleChange={handleChange}
-                  setFieldValue={setFieldValue}
-                />
-              )}
-              <Box display="flex" justifyContent="space-between" gap="50px">
-                {!isFirstStep && (
-                  <Button
-                    fullWidth
-                    color="primary"
-                    variant="contained"
-                    sx={{
-                      backgroundColor: shades.primary[200],
-                      boxShadow: "none",
-                      color: "white",
-                      borderRadius: 0,
-                      padding: "15px 40px",
-                    }}
-                    onClick={() => setActiveStep(activeStep - 1)}
-                  >
-                    Back
-                  </Button>
-                )}
-                <Button
-                  fullWidth
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: shades.primary[400],
-                    boxShadow: "none",
-                    color: "white",
-                    borderRadius: 0,
-                    padding: "15px 40px",
-                  }}
-                >
-                  {!isSecondStep ? "Next" : "Place Order"}
-                </Button>
-              </Box>
             </form>
           )}
         </Formik>
