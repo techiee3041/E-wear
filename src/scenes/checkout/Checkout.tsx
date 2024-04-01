@@ -1,9 +1,11 @@
 import { useAppSelector } from "../../state/hooks";
-import { StepLabel, Stepper, Step } from "@mui/material";
+import { StepLabel, Stepper, Step, Button } from "@mui/material";
 import { Formik, FormikErrors, FormikTouched } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 import Shipping from "./Shipping";
+import Payment from "./Payment";
+import { loadStripe } from "@stripe/stripe-js";
 
 export interface CheckoutValues {
   billingAddress: {
@@ -53,6 +55,8 @@ const initialValues: CheckoutValues = {
   phoneNumber: "",
 };
 
+const stripePromise = loadStripe("pk_test_51P0i4ORtTrrGsov4H5bYKzaVrAxM3g1HoLxOQo9GTIIpJfrLYbKNF6txTEXSDu6DPzWy2xy1JwVIHEEY1GU28VX600L6kEufwc");
+
 const CheckoutSchema = [
   yup.object().shape({
     billingAddress: yup.object().shape({
@@ -96,14 +100,22 @@ const Checkout = () => {
   const isFirstStep = activeStep === 0;
   const isSecondStep = activeStep === 1;
 
-  
   const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
     setActiveStep(activeStep + 1);
 
     //copies billing address into shipping address
     if (isFirstStep && values.shippingAddress.isSameAddress) {
-      actions.setFieldValue("shippingAddress", {...values.billingAddress, isSameAddress: true});
+      actions.setFieldValue("shippingAddress", {
+        ...values.billingAddress,
+        isSameAddress: true,
+      });
     }
+
+    if (isSecondStep) {
+      makePayment(values);
+    }
+
+    actions.setTouched({});
   };
 
   const makePayment = async (values: CheckoutValues) => {};
@@ -143,6 +155,39 @@ const Checkout = () => {
                   setFieldValue={setFieldValue}
                 />
               )}
+                {isSecondStep && (
+                <Payment
+                  values={values}
+                  errors={errors as FormikErrors<CheckoutValues>}
+                  touched={touched as FormikTouched<CheckoutValues>}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              <div className="flex justify-between gap-12">
+                {isSecondStep && (
+                  <Button
+                    fullWidth
+                    color="primary"
+                    variant="contained"
+                    className="bg-primary-200 shadow-none text-white rounded-none py-4 px-10"
+                    onClick={() => setActiveStep(activeStep - 1)}
+                  >
+                    Back
+                  </Button>
+                )}
+                <Button
+                    fullWidth
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    className="bg-primary-400 shadow-none text-white rounded-none py-4 px-10"
+                    onClick={() => setActiveStep(activeStep + 1)}
+                  >
+                    {isFirstStep ? "Next": "Place Order"}
+                  </Button>
+              </div>
             </form>
           )}
         </Formik>

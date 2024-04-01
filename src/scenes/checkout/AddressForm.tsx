@@ -1,13 +1,13 @@
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { TextField } from "@mui/material";
-import { FormikTouched, getIn } from "formik";
+import { FormikErrors, FormikTouched, getIn } from "formik";
 import { CheckoutValues} from "./Checkout";
 
 type Props = {
   type: string;
   values: CheckoutValues;
   touched: FormikTouched<CheckoutValues>;
-  errors: FormikTouched<CheckoutValues>;
+  errors:  FormikErrors<CheckoutValues>;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
 };
