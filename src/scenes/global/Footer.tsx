@@ -2,7 +2,7 @@ import { IconButton } from "@material-tailwind/react";
 import { FacebookOutlined, X, LinkedIn} from "@mui/icons-material";
 const Footer = () => {
   return (
-    <div className="mt-20 py-10 px-0 bg-blue-gray-50">
+    <div className="mt-20 py-10 px-0 bg-blue-gray-50 bottom-0">
       <div className="w-4/5 m-auto flex flex-col sm:flex-row justify-between flex-wrap gap-2 sm:gap-5 text-xs items-start">
         <div className="w-full sm:w-2/6 leading-6 border-b border-gray-400 border-solid border-1 sm:border-none">
           <h4 className="font-bold mb-7 text-secondary-500">E-WEAR</h4>

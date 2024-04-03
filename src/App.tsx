@@ -7,29 +7,43 @@ import Confirmation from "./scenes/checkout/Confirmation";
 import Navbar from "./scenes/global/Navbar";
 import CartMenu from "./scenes/global/CartMenu";
 import Footer from "./scenes/global/Footer";
+import Login from "./scenes/home/Login";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname])
+  }, [pathname]);
   return null;
-}
+};
+
 const App = () => {
-  return <div className="m-auto">
-    <BrowserRouter>
-    <Navbar />
-    <ScrollToTop />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/item/:itemId"element={<ItemDetails />} />
-      <Route path="checkout"element={<Checkout />} />
-      <Route path="checkout/success"element={<Confirmation />} />
-    </Routes>
-    <CartMenu />
-    <Footer />
-    </BrowserRouter>
-  </div>;
+  return (
+    <div className="m-auto">
+      <BrowserRouter>
+        <Routes>
+          {/* Routes without Navbar and Footer */}
+          <Route path="/login" element={<Login />} />
+          {/* Routes with Navbar and Footer */}
+          <Route
+            path="/*"
+            element={
+              <>
+                <Navbar />
+                <ScrollToTop />
+                <Route path="/" element={<Home />} />
+                <Route path="/item/:itemId" element={<ItemDetails />} />
+                <Route path="checkout" element={<Checkout />} />
+                <Route path="checkout/success" element={<Confirmation />} />
+                <CartMenu />
+                <Footer />
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 };
 
 export default App;
