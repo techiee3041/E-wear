@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { setIsCartOpen } from "../../state";
+import AuthDetail from "../checkout/AuthDetail";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Navbar = () => {
           <IconButton
             className="text-black bg-white p-3 transition duration-500 hover:bg-gray-200 hover:cursor-pointer rounded-full"
             placeholder="cart"
+            onClick={() => navigate("/profile")}
           >
             <PersonOutline />
           </IconButton>
@@ -51,13 +53,13 @@ const Navbar = () => {
             </IconButton>
           </Badge>
 
-          <IconButton
+          {/* <IconButton
             className="text-black bg-white p-3 transition duration-500 hover:bg-gray-200 hover:cursor-pointer rounded-full"
             placeholder="cart"
           >
             <MenuOutlined />
-          </IconButton>
-          <Button onClick={() => navigate("/login")}>Sign In</Button>
+          </IconButton> */}
+          <button onClick={() => navigate("/login")} className="text-sans text-light-blue-500"><AuthDetail /></button>
         </div>
       </div>
     </div>

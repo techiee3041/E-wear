@@ -116,14 +116,10 @@ const ItemDetails = () => {
             className="object-contain"
           />
         </div>
-        <div className="flex flex-1 basis-1/2 mb-10 flex-wrap">
-          <div className="flex justify-between">
-            <div>Home/Item</div>
-            <div>Prev Next</div>
-          </div>
+        <div className="flex flex-col flex-1 basis-1/2 mb-10 flex-wrap">
 
           <div className="mx-o mt-16 mb-6">
-            <h3 className="">{item.name}</h3>
+            <h3 className="text-lg font-bold text-red-900">{item.name}</h3>
             <p>Ksh{item.price}</p>
             <p className="mt-5">{item.longDescription}</p>
           </div>

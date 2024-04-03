@@ -7,6 +7,7 @@ import Navbar from "./scenes/global/Navbar";
 import CartMenu from "./scenes/global/CartMenu";
 import Footer from "./scenes/global/Footer";
 import Login from "./scenes/home/Login";
+import SignUp from "./scenes/home/SignUp";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/checkout/success" element={<Confirmation />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
       <CartMenu />
       <Footer />
