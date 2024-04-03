@@ -1,4 +1,4 @@
-import withAuth from "../../components/AuthRoute";
+
 import MainCarousel from "./MainCarousel";
 import ShoppingList from "./ShoppingList";
 import Subscribe from "./Subscribe";
@@ -15,4 +15,4 @@ const Home = () => {
   );
 };
 
-export default withAuth(Home);
+export default Home;

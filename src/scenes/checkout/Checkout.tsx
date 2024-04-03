@@ -102,28 +102,8 @@ const Checkout = () => {
   const isFirstStep = activeStep === 0;
   const isSecondStep = activeStep === 1;
 
-  const orderCollectionRef = collection(db, "order");
-
-  const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
-    setActiveStep(activeStep + 1);
-
-    //copies billing address into shipping address
-    if (isFirstStep && values.shippingAddress.isSameAddress) {
-      actions.setFieldValue("shippingAddress", {
-        ...values.billingAddress,
-        isSameAddress: true,
-      });
-    }
-
-    if (isSecondStep) {
-      makePayment(values);
-    }
-
-    actions.setTouched({});
-  };
 
   const makePayment = async (values: CheckoutValues) => {
-    const stripe = await stripePromise;
     const requestBody = {
       userName: [values.billingAddress.firstName, values.billingAddress.lastName].join(" "),
       email: values.email,
@@ -131,17 +111,31 @@ const Checkout = () => {
     };
   
     try {
-      // Create the document in Firestore
-      const docRef = await addDoc(collection(db, "orders"), requestBody);
+      // Specify the document ID for the specific order
+      const orderId = "your-specific-order-id";
+      const docRef = await addDoc(collection(db, "order", orderId, "orders"), requestBody);
       console.log("Document written with ID: ", docRef.id);
-  
-      // Redirect to checkout using the document ID
-      await stripe?.redirectToCheckout({
-        sessionId: docRef.id,
-      });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
+  };
+
+  const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
+    //copies billing address into shipping address
+    if (isFirstStep && values.shippingAddress.isSameAddress) {
+      actions.setFieldValue("shippingAddress", {
+        ...values.billingAddress,
+        isSameAddress: true,
+      });
+    }
+  
+    if (isSecondStep) {
+      await makePayment(values);
+      // Update the step after the payment is successfully made
+      setActiveStep(activeStep + 1);
+    }
+  
+    actions.setTouched({});
   };
 
 

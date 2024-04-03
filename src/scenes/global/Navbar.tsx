@@ -1,4 +1,4 @@
-import { IconButton } from "@material-tailwind/react";
+import { Button, IconButton } from "@material-tailwind/react";
 import { Badge } from "@material-tailwind/react";
 import {
   PersonOutline,
@@ -57,6 +57,7 @@ const Navbar = () => {
           >
             <MenuOutlined />
           </IconButton>
+          <Button onClick={() => navigate("/login")}>Sign In</Button>
         </div>
       </div>
     </div>
