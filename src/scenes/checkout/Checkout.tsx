@@ -6,6 +6,8 @@ import * as yup from "yup";
 import Shipping from "./Shipping";
 import Payment from "./Payment";
 import { loadStripe } from "@stripe/stripe-js";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebaseconfig";
 
 export interface CheckoutValues {
   billingAddress: {
@@ -100,6 +102,8 @@ const Checkout = () => {
   const isFirstStep = activeStep === 0;
   const isSecondStep = activeStep === 1;
 
+  const orderCollectionRef = collection(db, "order");
+
   const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
     setActiveStep(activeStep + 1);
 
@@ -118,7 +122,29 @@ const Checkout = () => {
     actions.setTouched({});
   };
 
-  const makePayment = async (values: CheckoutValues) => {};
+  const makePayment = async (values: CheckoutValues) => {
+    const stripe = await stripePromise;
+    const requestBody = {
+      userName: [values.billingAddress.firstName, values.billingAddress.lastName].join(" "),
+      email: values.email,
+      products: cart.map(({ id, count }) => ({ id, count })),
+    };
+  
+    try {
+      // Create the document in Firestore
+      const docRef = await addDoc(collection(db, "orders"), requestBody);
+      console.log("Document written with ID: ", docRef.id);
+  
+      // Redirect to checkout using the document ID
+      await stripe?.redirectToCheckout({
+        sessionId: docRef.id,
+      });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
+
+
   return (
     <div className="w-4/5 my-[100px] mx-auto">
       <Stepper activeStep={activeStep} sx={{ m: "20px 0" }}>
