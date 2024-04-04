@@ -1,3 +1,4 @@
+
 import { useAppSelector } from "../../state/hooks";
 import { StepLabel, Stepper, Step, Button } from "@mui/material";
 import { Formik, FormikErrors, FormikTouched } from "formik";
@@ -8,6 +9,7 @@ import Payment from "./Payment";
 import { loadStripe } from "@stripe/stripe-js";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
+import { useNavigate } from "react-router-dom";
 
 export interface CheckoutValues {
   billingAddress: {
@@ -101,24 +103,8 @@ const Checkout = () => {
   const cart = useAppSelector((state) => state.cart);
   const isFirstStep = activeStep === 0;
   const isSecondStep = activeStep === 1;
+  const navigate = useNavigate()
 
-
-  const makePayment = async (values: CheckoutValues) => {
-    const requestBody = {
-      userName: [values.billingAddress.firstName, values.billingAddress.lastName].join(" "),
-      email: values.email,
-      products: cart.map(({ id, count }) => ({ id, count })),
-    };
-  
-    try {
-      // Specify the document for the specific order
-      const orderCollectionRef = collection(db, "order");
-      const docRef = await addDoc(orderCollectionRef, requestBody);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
-  };
 
   const handleFormSubmit = async (values: CheckoutValues, actions: any) => {
     //copies billing address into shipping address
@@ -130,11 +116,24 @@ const Checkout = () => {
     }
   
     if (isSecondStep) {
-      await makePayment(values);
+      const requestBody = {
+        userName: [values.billingAddress.firstName, values.billingAddress.lastName].join(" "),
+        email: values.email,
+        products: cart.map(({ id, count }) => ({ id, count })),
+      };
+
+      try {
+        // Specify the document ID for the specific order
+        const orderId = "your-specific-order-id";
+        const docRef = await addDoc(collection(db, "order", orderId, "orders"), requestBody);
+        console.log("Document written with ID: ", docRef.id);
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
       // Update the step after the payment is successfully made
       setActiveStep(activeStep + 1);
     }
-  
+    navigate("/checkout/success")
     actions.setTouched({});
   };
 
@@ -197,26 +196,17 @@ const Checkout = () => {
                     Back
                   </Button>
                 )}
-                {isFirstStep ? (<Button
-                    fullWidth
-                    color="primary"
-                    variant="contained"
-                    className="bg-primary-400 shadow-none text-white rounded-none py-4 px-10"
-                    onClick={() => setActiveStep(activeStep + 1)}
-                  >
-                    Next
-                  </Button>)  : (<Button
+                <Button
                     fullWidth
                     type="submit"
                     color="primary"
                     variant="contained"
                     className="bg-primary-400 shadow-none text-white rounded-none py-4 px-10"
-                    onClick={() => setActiveStep(activeStep + 1)}
+                    onClick={() => {setActiveStep(activeStep + 1)
+                    }}
                   >
-                    Place Order
-                  </Button>)}
-                
-                  
+                    {isFirstStep ? "Next": "Place Order"}
+                  </Button>
               </div>
             </form>
           )}
