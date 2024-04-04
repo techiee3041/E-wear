@@ -111,9 +111,9 @@ const Checkout = () => {
     };
   
     try {
-      // Specify the document ID for the specific order
-      const orderId = "your-specific-order-id";
-      const docRef = await addDoc(collection(db, "order", orderId, "orders"), requestBody);
+      // Specify the document for the specific order
+      const orderCollectionRef = collection(db, "order");
+      const docRef = await addDoc(orderCollectionRef, requestBody);
       console.log("Document written with ID: ", docRef.id);
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -197,7 +197,15 @@ const Checkout = () => {
                     Back
                   </Button>
                 )}
-                <Button
+                {isFirstStep ? (<Button
+                    fullWidth
+                    color="primary"
+                    variant="contained"
+                    className="bg-primary-400 shadow-none text-white rounded-none py-4 px-10"
+                    onClick={() => setActiveStep(activeStep + 1)}
+                  >
+                    Next
+                  </Button>)  : (<Button
                     fullWidth
                     type="submit"
                     color="primary"
@@ -205,8 +213,10 @@ const Checkout = () => {
                     className="bg-primary-400 shadow-none text-white rounded-none py-4 px-10"
                     onClick={() => setActiveStep(activeStep + 1)}
                   >
-                    {isFirstStep ? "Next": "Place Order"}
-                  </Button>
+                    Place Order
+                  </Button>)}
+                
+                  
               </div>
             </form>
           )}
